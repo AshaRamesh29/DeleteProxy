@@ -32,19 +32,28 @@ exports.generateCsv = function (data, env) {
 
             header: [
 
-                { id: 'name', title: 'NAME' },
+                { id: 'name', title: 'Name' },
+                { id: 'revCount', title: 'RevCount'}
 
             ]
 
         });
 
         var records = [];
-
-        data.forEach((data) => {
-
-            records.push({ name: data });
+       
+        data.forEach((val) => {
+            if(val.hasOwnProperty('revCount')){
+                console.log('val:::',val)
+                records.push(val);   
+            }else{
+                
+                console.log('val:::',val)
+                records.push(val);
+            }
 
         })
+       
+       
 
         csvWriter.writeRecords(records) // returns a promise
 

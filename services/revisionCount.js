@@ -1,11 +1,12 @@
 var main = require("./main.js");
 var readXlsx = require('./utility/readcsv');
+var utils = require("./utility/report");
 exports.revisionCount = (req,res)=>{
     var finalResponse = [];
     var proxies = readXlsx.readMatserProxies();
+    console.log('master proxies',proxies)
     var auth = req.headers.authorization;
     var proxyCount = 0;
-    console.log(" proxyCount ",proxyCount)
     var options = {
         host: "api.enterprise.apigee.com",
         port: 443,
@@ -21,21 +22,21 @@ exports.revisionCount = (req,res)=>{
             if (err) {
                 res.send(err);
             } else {
-                console.log('response ',response);
                 if(response){
                     proxyCount++;
                     constructResponse(proxy,response,finalResponse);
                    
                 }
-               
+                
                if(proxies.length == proxyCount){
                 
                 //console.log('finalResponse ',finalResponse);
                 finalResponse = finalResponse.filter((proxy)=>{
                     return proxy.revCount>10;
                 })
+                var path = utils.generateCsv(finalResponse,"master-proxy-revision-count");
+                finalResponse.filePath = req.protocol + '://' + req.get('host')+"/files/"+path;
                 res.send(finalResponse);
-                  
                }
             }
         }catch(e){
