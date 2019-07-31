@@ -1,7 +1,8 @@
 var main = require("./main.js");
 var async = require("async");
 var utils = require("./utility/report");
-var error = require('./utility/error')
+var error = require('./utility/error');
+var readXlsx = require('./utility/readcsv');
 exports.allUnUsedProxies = function (req, res) {
     try{
     async.waterfall([
@@ -116,7 +117,7 @@ function uniqueProxies (appObj, callback) {
     proxiesArray = proxiesArray.filter((proxy, index, proxiesArray) => {
         return proxiesArray.indexOf(proxy) == index;
     });
-    console.log("proxiesArray ",proxiesArray.length);
+   // console.log("proxiesArray ",proxiesArray.length);
     appObj.proxiesArray = proxiesArray;
     return callback(null, appObj);
 }
@@ -131,9 +132,19 @@ function copyProxiesToArry (dimensions) {
 
 function finalResponse(appObj, callback){
     try{
-        
-    finalArray = appObj.allProxies.filter(x => appObj.proxiesArray.includes(x));
-    finalArray = appObj.allProxies.filter(x => !finalArray.includes(x));
+    var finalProxiesList= [];
+
+     finalArray = appObj.allProxies.filter(x => appObj.proxiesArray.includes(x));
+    // console.log('finalArray1',finalArray)
+     finalArray = appObj.allProxies.filter(x => !finalArray.includes(x));
+     console.log('finalArray length ',finalArray.length);
+    // console.log('finalArray1',finalArray)
+    var masterProxy = readXlsx.readMatserProxies();
+    console.log(masterProxy,'masterProxy');
+   // var finalProxiesList = finalArray.filter(n => !finalArray.includes(n));    
+   var finalProxiesList = finalArray.filter(n => !masterProxy.includes(n));
+   console.log('finalProxiesList',finalProxiesList);
+   finalArray = finalProxiesList;
     return callback(null,finalArray);
     }catch(e){
         error.error(appObj.req,appObj.res);

@@ -10,8 +10,11 @@ var undeployProxy = require('./services/undeployProxy.js');
 var deleteProxy = require("./services/deleteProxy.js");
 var productDetail = require('./services/productDetail.js');
 var updateProductDetail = require('./services/updateProductDetail.js');
-var allUnUsedProxies =  require('./services/allUnUsedProxies.js');
-var undeployedAllEnv =  require('./services/undeployedAllEnv.js')
+var allUnUsedProxies = require('./services/allUnUsedProxies.js');
+var undeployedAllEnv = require('./services/undeployedAllEnv.js');
+var downloadBundle = require('./services/downloadBundle.js');
+var allDeploymentDetails = require('./services/allApiDeploymentDetails');
+var revisionCount = require('./services/revisionCount');
 
 
 var app = express();
@@ -24,29 +27,33 @@ app.use(bodyParser.json());
 
 app.use(cors());
 
-app.use("/files",express.static('public'));
-app.all("*",oauth.oauthValidation);
+app.use("/files", express.static('public'));
+app.all("*", oauth.oauthValidation);
 //setting middleware
- //Serves resources from public folder
+//Serves resources from public folder
 
 /* returns all proxies*/
-app.get('*/apis',getAllProxies.getAllProxies);
+app.get('*/apis', getAllProxies.getAllProxies);
 //app.get('*/zero-traffic',unUsedProxies.unUsedProxies);
 //get deployment details for proxy
-app.get('*/deployment-details',deploymentDetails.deploymentDetails);
+app.get('*/deployment-details', deploymentDetails.deploymentDetails);
 //undeploy proxy by env name and revision no
 // app.delete("*/undeploy-proxy/:proxyname",undeployProxy.undeployProxy);
 
 // //delete proxy from organization;
 // app.delete("*/delete-proxy/:proxyname",deleteProxy.deleteProxy);
 // //get product details
-app.get("*/product-detail",productDetail.productDetail);
+app.get("*/product-detail", productDetail.productDetail);
 // //update product details
 // app.put("*/product-detail/:productname",updateProductDetail.updateProductDetail);
 
-app.get("*/zero-traffic-all-env",allUnUsedProxies.allUnUsedProxies);
-app.get("*/undeplyed-all-env",undeployedAllEnv.undeployedAllEnv);
+app.get("*/zero-traffic-all-env", allUnUsedProxies.allUnUsedProxies);
+app.get("*/undeplyed-all-env", undeployedAllEnv.undeployedAllEnv);
+app.get("*/api-bundle", downloadBundle.downloadBundle);
+app.get("*/all-deployment-details", allDeploymentDetails.allApiDeploymentDetails);
+app.get("*/revision-count", revisionCount.revisionCount);
 
-app.listen(port,function(){
-    console.log('server listening on ',port)
+
+app.listen(port, function () {
+    console.log('server listening on ', port)
 });

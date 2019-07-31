@@ -26,6 +26,7 @@ exports.getAllProxies = function(req,res){
          var path = utils.generateCsv(response,"all-api's");
          apiResponse.filePath = req.protocol + '://' + req.get('host')+"/files/"+path;
          apiResponse.proxies = response;
+         console.log("res.headerSent ",res.headerSent);
          if(!res.headerSent){
             res.send(apiResponse);
          }
